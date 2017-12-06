@@ -8,14 +8,17 @@ const sum = R.sum
 
 const matching = R.filter(([a, b]) => a === b)
 
-const pairWith = f => list => R.zip(f(list), list)
+const pairWith = f => R.converge(R.zip, [f, R.identity])
 
-const neighbors = ([head, ...tail]) => ([...tail, head])
+const middle = R.converge(R.divide, [R.length,  R.always(2)])
 
-const antipodals = (x) => {
-  const [head, tail] = R.splitAt(R.length(x) / 2)(x)
+const cycle = R.curry((n , list) => {
+  const [head, tail] = R.splitAt(n)(list)
   return [...tail, ...head]
-}
+})
+
+const neighbors = cycle(1)
+const antipodals = R.converge(cycle, [middle, R.identity])
 
 const inverseCaptcha = R.compose(
   sum,
