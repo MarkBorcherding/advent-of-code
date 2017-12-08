@@ -10,9 +10,9 @@ const matching = R.filter(([a, b]) => a === b)
 
 const pairWith = f => R.converge(R.zip, [f, R.identity])
 
-const middle = R.converge(R.divide, [R.length,  R.always(2)])
+const middle = R.converge(R.divide, [R.length, R.always(2)])
 
-const cycle = R.curry((n , list) => {
+const cycle = R.curry((n, list) => {
   const [head, tail] = R.splitAt(n)(list)
   return [...tail, ...head]
 })
