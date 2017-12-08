@@ -1,7 +1,7 @@
 
 import { expect } from 'chai'
 
-import checksum from './checksum'
+import checksum, { part2 } from './checksum'
 
 describe('checksum', () => {
   it('example', () => {
@@ -10,5 +10,13 @@ describe('checksum', () => {
                    [2, 4, 6, 8]]
 
     expect(checksum(input)).to.be.eql(8 + 4 + 6)
+  })
+
+  it('part2', () => {
+    const input = [[5, 9, 2, 8],
+                   [9, 4, 7, 3],
+                   [3, 8, 6, 5]]
+
+    expect(part2(input)).to.be.eql(4 + 3 + 2)
   })
 })
