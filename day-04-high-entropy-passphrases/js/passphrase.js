@@ -9,14 +9,17 @@ const onlyOne = R.compose(
 
 const groupSimilar = R.groupBy(R.identity)
 
+const orderCharacters = R.sort(R.compare)
+
 const testPassphrase = R.compose(
   R.isEmpty,
   R.reject(onlyOne),
   groupSimilar,
+  R.map(orderCharacters),
   splitOnSpaces
 )
 
 const testPassphrases = R.compose(
   R.length,
-  R.reject(testPassphrase)
+  R.filter(testPassphrase)
 )
