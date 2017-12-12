@@ -2,24 +2,24 @@
 import R from 'ramda'
 import {List} from 'immutable'
 
+var R = require('ramda')
+var List = require('immutable').List
+
+
 var jump = (stack, n, i = 1) => {
-  const next = n + stack[n]
-  if(next >= stack.length || next < 0) {
+  const offset =  stack.get(n)
+  const next = n + offset
+  if(next >= stack.size || next < 0) {
     return i
   }
   else {
-    stack[n] = stack[n] + 1
-    return jump(stack, next, i + 1)
+    const nextOffset = (offset >= 3 ? - 1 : 1)
+    return jump(stack.set(n, stack.get(n) + nextOffset), next, i + 1)
   }
 }
 
-List = require('immutable').List
-input = List([0, 3, 0, 1, -3])
-
-jump(input, 0)
-
-
-var input2 = [
+var input = List([0, 3, 0, 1, -3])
+var input2 = List([
 0,
 0,
 1,
@@ -1019,4 +1019,4 @@ var input2 = [
 -705,
 -275,
 -756,
--79]
+  -79])
