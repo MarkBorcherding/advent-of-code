@@ -15,7 +15,7 @@ object Day06 {
     val rest = allocations.tail
 
     val foundAt = rest.indexOf(allocation)
-    if (foundAt > 0) return (iteration -> foundAt)
+    if (foundAt > 0) return (iteration -> (foundAt + 1))
 
     val max = allocation.max
     val maxIndex = allocation.indexOf(max)
