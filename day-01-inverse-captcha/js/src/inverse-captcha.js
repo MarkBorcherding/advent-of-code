@@ -18,7 +18,7 @@ const cycle = R.curry((n, list) => {
 })
 
 const neighbors = cycle(1)
-const antipodals = R.converge(cycle, [middle, R.identity])
+const antipodes = R.converge(cycle, [middle, R.identity])
 
 const inverseCaptcha = R.compose(
   sum,
@@ -31,7 +31,7 @@ export const version2 = R.compose(
   sum,
   first,
   matching,
-  pairWith(antipodals),
+  pairWith(antipodes),
 )
 
 export default inverseCaptcha
