@@ -1,8 +1,8 @@
 package adventofcode
 
+import scala.annotation.tailrec
+
 object Day09 {
-
-
 
   // <>, empty garbage.
   //   <random characters>, garbage containing random characters.
@@ -19,17 +19,20 @@ object Day09 {
 
   def lines(input:String) = input.split("\n").map(_.trim)
 
-
   def tryIt =
     lines(sampleInput)
       .map(stripNegated)
       .map(stripGarbage)
       .map(decomma)
-      .map(score)
+      .map(score(0,1))
 
-
-  def score(s: String, current: Int = 0, next: Int = 1) = {
-    // strip out {} and tailrecurr
+  val emptryBraces = "{}".r
+  val foundBraces = emptryBraces.findAllIn(_:CharSequence).length
+  val stripBraces = emptryBraces.replaceAllIn(_:CharSequence, "")
+  @tailrec
+  def score(current: Int = 0, containingDepth: Int = 1)(s: String):Int = {
+    if(s.length == 0) return current
+    score(current + foundBraces(s) * containingDepth, containingDepth + 1)(stripBraces(s))
   }
 
   val sampleInput =
