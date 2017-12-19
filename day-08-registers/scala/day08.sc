@@ -1079,9 +1079,7 @@ val s = """lp dec 419 if mxn >= 7
    val predicate = (_:Int).>=(_:Int) 
   }
 
-
   val instruction = raw"(\w+) (\w+) (-?\d+) if (\w+) (<|<=|==|!=|>=|>) (-?\d+)".r
-
   def parse(input: String): Seq[Instruction] =
     input
       .split("\n")
