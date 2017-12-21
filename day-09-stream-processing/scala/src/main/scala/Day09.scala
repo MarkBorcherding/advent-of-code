@@ -14,7 +14,9 @@ object Day09 {
 
 
   val stripNegated = "!.".r.replaceAllIn(_:CharSequence, "")
-  val stripGarbage = "<[^>]*>".r.replaceAllIn(_:CharSequence, "")
+  val garbage = "<([^>]*)>".r
+  val stripGarbage = garbage.replaceAllIn(_:CharSequence, "")
+  val countGarbage = garbage.findAllIn(_:CharSequence).matchData.map(_.group(1)).mkString.length()
   val decomma = ",".r.replaceAllIn(_:CharSequence, "")
 
   def lines(input:String) = input.split("\n").map(_.trim)
@@ -29,6 +31,11 @@ object Day09 {
       .map(stripGarbage)
       .map(decomma)
       .map(score)
+
+  def count(s: String) =
+    Some(s)
+      .map(stripNegated)
+      .map(countGarbage)
 
   def score(s: String) =
     s.foldLeft(0 -> 1) {
@@ -46,7 +53,4 @@ object Day09 {
       |{{<ab>},{<ab>},{<ab>},{<ab>}}
       |{{<!!>},{<!!>},{<!!>},{<!!>}}
       |{{<a!>},{<a!>},{<a!>},{<ab>}}""".stripMargin
-
-
-  val input = scala.io.Source.fromFile("file.txt").mkString
 }
