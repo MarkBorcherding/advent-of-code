@@ -21,19 +21,21 @@ object Day09 {
 
   def tryIt =
     lines(sampleInput)
+      .map(go)
+
+  def go(s: String) =
+    Some(s)
       .map(stripNegated)
       .map(stripGarbage)
       .map(decomma)
-      .map(score(0,1))
+      .map(score)
 
-  val emptryBraces = "{}".r
-  val foundBraces = emptryBraces.findAllIn(_:CharSequence).length
-  val stripBraces = emptryBraces.replaceAllIn(_:CharSequence, "")
-  @tailrec
-  def score(current: Int = 0, containingDepth: Int = 1)(s: String):Int = {
-    if(s.length == 0) return current
-    score(current + foundBraces(s) * containingDepth, containingDepth + 1)(stripBraces(s))
-  }
+  def score(s: String) =
+    s.foldLeft(0 -> 1) {
+      case ((score, level), '{') => score + level -> (level + 1)
+      case ((score, level), '}') => score -> (level - 1)
+      case ((score, level), s) => println(s"WHAT $s"); (score, level)
+    }._1
 
   val sampleInput =
     """{}
@@ -44,4 +46,7 @@ object Day09 {
       |{{<ab>},{<ab>},{<ab>},{<ab>}}
       |{{<!!>},{<!!>},{<!!>},{<!!>}}
       |{{<a!>},{<a!>},{<a!>},{<ab>}}""".stripMargin
+
+
+  val input = scala.io.Source.fromFile("file.txt").mkString
 }
