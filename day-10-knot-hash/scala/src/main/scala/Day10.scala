@@ -45,6 +45,24 @@ object Day10 {
   }
 
 
+  def toAscii(s:String): Seq[Int] = s.map(_.toInt)
+
+  val repeat = List.fill(64)(_:Seq[Int]).flatten
+
+  val hexify = "%02x".format(_:Int)
+
+  val xor = (_:Seq[Int]).reduce(_ ^ _)
+
+  val suffix = List(17, 31, 73, 47, 23)
+
+  def twist2(s: String) = twist(
+      Range(0,256).toSeq,
+      repeat(toAscii(s) ++ suffix))
+      .toList
+      .grouped(16)
+      .map(xor andThen hexify)
+      .mkString
+
   def go = twist(List(0, 1, 2, 3, 4), List(3, 4, 1, 5 )).toList
 
   def test1 = twist(
@@ -53,5 +71,8 @@ object Day10 {
     .toList
     .take(2)
     .reduce(_ * _)
+
+  def go2 = twist2("")
+
 
 }
