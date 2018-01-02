@@ -45,5 +45,19 @@ object Day12 {
       }
     }
   }
-}
 
+  def grouped(g: Graph):List[NodeList] = {
+    println(g.size)
+
+    if(g.isEmpty) return List()
+
+    val headGroup = connected(g, SortedSet[Int](), g.head._1)
+
+    val rest =
+      headGroup
+        .foldLeft(g) { (acc, n) => acc - n }
+
+    headGroup +: grouped(rest)
+  }
+
+}
