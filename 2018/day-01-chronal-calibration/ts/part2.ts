@@ -1,3 +1,4 @@
+
 const input = () => (`-7
 +16
 +5
@@ -1028,15 +1029,14 @@ const input = () => (`-7
 -2
 -131610`);
 
-
 const splitOnLines = (x: string) => x.split("\n");
 const toNumbers = (x: string[]) => x.map(parseFloat)
 
-
 function* cycle<T>(list:T[]) {
     let i = 0;
+    const l = list.length;
     while(true) {
-        yield list[i++ % list.length];
+        yield list[i++ % l];
     }
 }
 
@@ -1059,16 +1059,16 @@ const equals = <T>(x:T) => (y:T) => x === y
 
 const not = <A extends any[]>(f:(...a:A) => boolean) => (...a:A) => !f(...a)
 
-type Acc = [number, number[]]
+type Acc = [number, Set<number>]
 
 const alreadyFound = ([offset, previousOffsets]: Acc, _freq: number) =>
-    !!previousOffsets.find(equals(offset))
+    !!previousOffsets.has(offset)
 
 const add:(acc:Acc, curr:number)=>Acc = ([offset , previousOffsets], current) =>
-    [ offset + current, previousOffsets.concat(offset) ]
+    [ offset + current, previousOffsets.add(offset) ]
 
-const f = reduceWhile (not(alreadyFound))  (add) ([0, []])
+const f = reduceWhile (not(alreadyFound))  (add) ([0, new Set<number>()])
 
 const i = f(cycle(toNumbers(splitOnLines(input()))))
 
-console.log(i)
+console.log(i[0])
