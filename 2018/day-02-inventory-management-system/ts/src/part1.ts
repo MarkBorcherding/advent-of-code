@@ -21,7 +21,7 @@ const all = <A>(...preds:((a:A) => boolean)[]) => (a:A) =>
         (acc, curr) => acc && curr(a), 
         true);
 
-const map = <A,B>(f:((a:A) =>B)) => (a:A[]) => a.map(f)
+const map = <A,B>(f:((a:A) =>B)) => (a:A[]) => a.map(f);
 
 const reduce = <A,B>(f: ((acc:B, a:A)=>B)) => (initial:B) => (a:A[]) =>
     a.reduce(f,initial)
@@ -76,11 +76,11 @@ const convertStringToArray = (x:string) => x.split("")
 const splitIntoLines = (s: string) => s.split("\n")
 
 const countTwoThree = (o:{[id:string]:number}) =>
-    Object.keys(o).reduce<[number, number]>(
-        (acc: [number, number], curr: string) =>
+    reduce (
+        (acc: number[], curr: string) =>
             [ o[curr] === 2 ? 1 : acc[0],
               o[curr] === 3 ? 1 : acc[1]],
-        [0,0])
+    ) ([0,0]) (Object.keys(o))
 
 const addThing = (acc: number[], curr: number[]) =>
     [acc[0] + curr[0], acc[1]+ curr[1]]
@@ -100,10 +100,6 @@ const solve = pipe(
     ((a:number[]) => a[0]*a[1])
 )
 
-//const solve = groupBy<string>(identity)(['a', 'b'])
-
-
-
 describe('Part 1', () => {
     it('solves the provided test case', () => {
         const input = `abcdef
@@ -117,8 +113,7 @@ describe('Part 1', () => {
         expect(solve(input)).to.eq(12);
     })
 
-    it('solves the puzzle example', () => {
-        const input = `efmyhuxcqqldtwjzvisepargvo
+    it('solves the puzzle example', () => {        const input = `efmyhuxcqqldtwjzvisepargvo
 efuyhuxckqldtwjrvrsbpargno
 efmyhuxckqlxtwjxvisbpargoo
 efmyhuxczqbdtwjzvisbpargjo
@@ -369,6 +364,6 @@ efhyxuxckqldtwjzvisbpargko
 sfmyhexckqldtwjzvisbqargno
 efmghuxckqldtwjzvitbparnno`;
 
-        expect(solve(input)).to.equal(0);
+        expect(solve(input)).to.equal(7808);
     })
 });
