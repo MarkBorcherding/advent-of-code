@@ -1,36 +1,80 @@
 import { expect } from 'chai'; 
 
-import { tap, reduce, map, pipe, groupBy, identity, mapValues, filterValues, between} from '@aoc/aoc';
 
-const convertStringToArray = (x:string) => x.split("")
-const splitIntoLines = (s: string) => s.split("\n")
+function pipe<A,B,C>(f:(a:A)=>B, g:(b:B)=>C):(a:A)=>C
+function pipe<A,B,C,D>(f:(a:A)=>B, g:(b:B)=>C, h:(c:C)=>D):(a:A)=>D 
+function pipe<A,B,C,D,E>
+    (a:(a:A)=>B, b:(b:B)=>C, c:(c:C)=>D, d:(d:D)=>E):(a:A)=>E
+function pipe<A,B,C,D,E,F>
+    (a:(a:A)=>B, b:(b:B)=>C, c:(c:C)=>D, d:(d:D)=>E, e:(e:E)=>F):(a:A)=>F
+function pipe<A,B,C,D,E,F,G>
+    (a:(a:A)=>B, b:(b:B)=>C, c:(c:C)=>D, d:(d:D)=>E, e:(e:E)=>F,
+     f:(f:G)=>G):(a:A)=>G
 
-const countTwoThree = (o:{[id:string]:number}) =>
-    reduce (
-        (acc: number[], curr: string) =>
-            [ o[curr] === 2 ? 1 : acc[0],
-              o[curr] === 3 ? 1 : acc[1]],
-    ) ([0,0]) (Object.keys(o))
+function pipe(...f:any) {
+    const apply = (v: any, f:any) => f(v)
+    return (a:any) => f.reduce(apply, a)
+}
 
-const addThing = (acc: number[], curr: number[]) =>
-    [acc[0] + curr[0], acc[1]+ curr[1]]
+const all = <A>(...preds:((a:A) => boolean)[]) => (a:A) =>
+    preds.reduce(
+        (acc, curr) => acc && curr(a), 
+        true);
+
+const map = <A,B>(f:((a:A) =>B)) => (a:A[]) => a.map(f);
+
+const reduce = <A,B>(f: ((acc:B, a:A)=>B)) => (initial:B) => (a:A[]) =>
+    a.reduce(f,initial)
 
 
-const solve = pipe(
-    splitIntoLines,
-    map(pipe(
-        convertStringToArray,
-        groupBy(identity),
-        mapValues(x => x.length),
-        filterValues(between(2,3)),
-        countTwoThree,
-    )),
-    reduce (addThing) ([0,0]),
-    tap(console.log),
-    ((a:number[]) => a[0]*a[1])
-)
+const groupBy = <A>(keyFunction:(a:A) => string) => (list:A[]):{[id: string]:A[]} =>
+    list.reduce(
+    (acc: {[id: string]: A[]}, curr:A) => {
+        const key = keyFunction(curr);
+        const group = acc[key];
+        acc[key] = group ? [curr, ...group] : [curr];
+        return acc
+    },
+    {})
 
-describe('Part 1', () => {
+
+const identity = <A>(a:A) => a;
+
+const tap = <A>(f:(a:A)=>void) => (a:A) => { f(a); return a}
+
+const mapValues = <A,B>(f:(a:A) => B) => (o: {[id:string]:A}) =>{
+    const keys = Object.keys(o);
+    return keys.reduce(
+        (acc: {[id:string]: B}, curr: string) => {
+            acc[curr] = f(o[curr]);
+            return acc
+        },
+        {})}
+
+const filterValues =
+    <A, B extends {[id: string]:A}>(pred:(a:A) => boolean) =>
+    (o:B) =>
+    {
+        return Object.keys(o).reduce((acc:{[id:string]:A}, curr) => {
+            if(pred(o[curr])) {
+                acc[curr] = o[curr]
+            }
+            return acc;
+        }, {})
+    }
+
+const gte = (x:number) => (y:number) => x >= y
+const lte = (x:number) => (y:number) => x <= y
+const between = (min: number, max:number) =>
+    all(
+        lte(min),
+        gte(max))
+
+// end of library code
+
+const solve = (a: any) => ('')
+
+describe('Part 2', () => {
     it('solves the provided test case', () => {
         const input = `abcdef
  bababc
@@ -43,7 +87,8 @@ describe('Part 1', () => {
         expect(solve(input)).to.eq(12);
     })
 
-    it('solves the puzzle example', () => {        const input = `efmyhuxcqqldtwjzvisepargvo
+    it('solves the puzzle example', () => {
+        const input = `efmyhuxcqqldtwjzvisepargvo
 efuyhuxckqldtwjrvrsbpargno
 efmyhuxckqlxtwjxvisbpargoo
 efmyhuxczqbdtwjzvisbpargjo
