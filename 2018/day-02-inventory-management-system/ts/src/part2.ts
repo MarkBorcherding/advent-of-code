@@ -1,5 +1,6 @@
 import { reduceUntil } from '@aoc/aoc';
 import { expect } from 'chai';
+
 type NotFound = {previous: string[]}
 type Found = {matching: string[]}
 type Possible = Found | NotFound
