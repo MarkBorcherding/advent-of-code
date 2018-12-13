@@ -62,3 +62,38 @@ export const between = (min: number, max:number) =>
     all(
         lte(min),
         gte(max))
+
+export const arrayify = (s:string) => s.split('')
+
+export const zip = <A>(a:A[]) => <B>(b:B[]) => a.map((item, index) => [item, b[index]] )
+
+export const count = <A>(pred:(a:A)=>boolean) => (a:A[]) => a.filter(pred).length
+
+export const contains = <T>(f:(t:T)=>boolean) => (t:T[]) => !!t.filter(f)
+
+export const equal = <A>(...a:A[]) => a.reduce((acc, curr, i, arr) => acc && curr === arr[0], true)
+
+export const take = (n:number) => <A>(l:A[]) => l.slice(0,n)
+
+export const not = <A extends any[]>(f:(...a:A)=>boolean) => (...a:A) => !f(...a)
+
+export const arrEqual = <A>(l:A[]) => l.reduce((acc, cur)=> acc && (cur === l[0]), true)
+
+export const reduceUntil =
+    <A>(predicate:(acc:A)=>boolean) =>
+    <T>(func:(acc:A, curr:T)=>A) =>
+    (initial: A) =>
+    (list:T[]) => {
+        let items = list[Symbol.iterator]();
+        let curr = items.next();
+        let acc = initial;
+        let found = false;
+
+        while(!curr.done && !found){
+            acc = func(acc, curr.value);
+            found = predicate(acc)
+            curr = items.next();
+        }
+
+        return acc
+    }
