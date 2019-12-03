@@ -11,23 +11,33 @@ const set = (arr: number[], index: number, val: number) => {
     return f
 }
 
-const add = (mem: number[], a: number, b: number, location: number) => 
-    set(mem, location, mem[a] + mem[b]);
+type Program = [number[], number]
 
-const multiply = (mem: number[], a: number, b: number, location: number) => 
-    set(mem, location, mem[a] * mem[b])
+const add = ([mem, address]: Program):Program => {
+    const a = mem[mem[address + 1]]
+    const b = mem[mem[address + 2]]
+    const location = mem[address + 3]
+    return [set(mem, location, a + b), address + 4];
+};
 
-const compute = (program: number[], pointer:number = 0): [number[], number] => {
-    const opscode = program[pointer]
+const multiply = ([mem, address]: Program): Program => {
+    const a = mem[mem[address + 1]]
+    const b = mem[mem[address + 2]]
+    const location = mem[address + 3]
+    return [set(mem, location, a * b), address + 4];
+}
+
+const compute = ([program, address]: Program): Program  => {
+    const opscode = program[address]
     switch(opscode) {
-        case ADD: return compute(add(program, program[pointer + 1], program[pointer + 2], program[pointer + 3]), pointer + 4)
-        case MULTIPLY: return compute(multiply(program, program[pointer + 1], program[pointer + 2], program[pointer + 3]), pointer + 4)
-        case HALT: return [program, pointer]
-        default: throw new Error("Could not handle code " + program[pointer])
+        case ADD: return compute(add([program, address]))
+        case MULTIPLY: return compute(multiply([program, address]))
+        case HALT: return [program, address]
+        default: throw new Error("Could not handle code " + program[address])
     }
 }
 
 export const fix = (mem: number[], noun = 12, verb = 2) => 
     set(set(mem, 1, noun), 2, verb)
 
-export default (mem: number[]) => compute(mem);
+export default (mem: number[]) => compute([mem, 0]);
