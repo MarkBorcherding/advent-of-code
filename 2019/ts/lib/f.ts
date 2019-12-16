@@ -8,7 +8,7 @@ export const contains = <T>(f: F<T, boolean>) => (arrayLike: ArrayLike<T>) => {
 };
 
 export const range = (count: number, startAt: number = 0) =>
-  Array.from(new Array(count), (x, i) => i + startAt + 1);
+  Array.from(new Array(count), (x, i) => i + startAt);
 
 export const min = (arr: number[]) => {
   return arr.reduce((min, cur) => (cur < min ? cur : min), arr[0]);

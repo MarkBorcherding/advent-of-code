@@ -156,7 +156,8 @@ const bounds = (board: CircuitBoard) => {
   const maxX = max(allX);
   const minY = min(allY);
   const maxY = max(allY);
-  return [minX, maxX, minY, maxY];
+  const b = [minX, maxX, minY, maxY];
+  return b;
 };
 
 /** The starting point for all circuit board */
@@ -165,16 +166,28 @@ const EmptyCircuitBoard: CircuitBoard = Map([[0, Map([[0, "O"]])]]);
 /** The origin coordinates */
 const origin: Position = [0, 0] as const;
 
+/** since we are storing the x axis first we need to rotate the drawing */
+const swap = (s: WireSegment) => {
+  switch (s) {
+    case "|":
+      return "-";
+    case "-":
+      return "|";
+    default:
+      return s;
+  }
+};
+
 /** Create a visual representation of the circuit board */
-const display = (board: CircuitBoard) => {
+export const display = (board: CircuitBoard) => {
   const [minX, maxX, minY, maxY] = bounds(board);
-  const yRange = range(maxY - minY, minY);
-  const xRange = range(maxX - minX, minX);
+  const yRange = range(maxY - minY + 1, minY);
+  const xRange = range(maxX - minX + 1, minX);
   const columns = yRange.map(y =>
     xRange
       .map(x => {
         const currY = get([x, y])(board);
-        return currY === undefined ? " " : currY;
+        return currY === undefined ? "." : swap(currY);
       })
       .join("")
   );
@@ -206,10 +219,11 @@ const closestIntersection = (board: CircuitBoard) => {
 };
 
 /** Calculate the closest intersect */
-const calculate = (input: string[]) => {
+const calculate = (input: string[]): [number, CircuitBoard] => {
   const wires = map(parseIntoWire)(input);
   const circuitBoard = wires.reduce(layoutWire, EmptyCircuitBoard);
-  return manhattanDistance(closestIntersection(circuitBoard));
+  const distance = manhattanDistance(closestIntersection(circuitBoard));
+  return [distance, circuitBoard];
 };
 
 export default calculate;
