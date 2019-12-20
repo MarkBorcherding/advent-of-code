@@ -28,19 +28,29 @@ const digitsIncrease = (s: number[]) =>
     return acc && arr[prevIndex] <= cur;
   }, true);
 
-const consecutive = <T>(digits: T[]) =>
-  digits.reduce((acc, cur, index, arr) => {
-    const prevIndex = index - 1;
-    if (prevIndex < 0) return false;
-    return acc || arr[prevIndex] === cur;
-  }, false);
+const allButLast = <T>(t: T[]) => t.slice(0, -1);
+const last = <T>(t: T[]) => t[t.length - 1];
+
+const groupBy = <A>(f: (cur: A, index: number, arr: A[]) => boolean) => (
+  a: A[]
+) =>
+  a.reduce((acc: Array<A[]>, cur, index, arr) => {
+    if (index === 0) return [...acc, [cur]];
+    if (f(cur, index, arr)) return [...allButLast(acc), [...last(acc), cur]];
+    return [...acc, [cur]];
+  }, []);
+
+const consecutive = (n: number) => <T>(t: T[]) => {
+  const groups = groupBy((cur, index, arr: T[]) => cur === arr[index - 1])(t);
+  return groups.filter(g => g.length === n).length > 0;
+};
 
 const isPossible = (n: number) => {
   const digits = n
     .toString()
     .split("")
     .map(s => parseInt(s));
-  return all(digitsIncrease, consecutive)(digits);
+  return all(digitsIncrease, consecutive(2))(digits);
 };
 
 const filter = <T>(f: (t: T) => boolean) => (starting: T[] = []) => (
@@ -53,7 +63,7 @@ const filter = <T>(f: (t: T) => boolean) => (starting: T[] = []) => (
 export const calculate = (s: string) => {
   const [min, max] = s.split("-").map(s => parseInt(s));
 
-  const possibles = filter(isPossible)()(range(min, max));
+  const possibles = filter(isPossible)([])(range(min, max));
   return possibles.length;
 };
 

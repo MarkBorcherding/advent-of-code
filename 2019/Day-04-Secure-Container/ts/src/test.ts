@@ -6,6 +6,6 @@ import { describe, it } from "mocha";
 
 describe("Example Data", () => {
   it("has the right number", () => {
-    assert.equal(1, calculate("171309-643603"));
+    assert.equal(1111, calculate("171309-643603"));
   });
 });
