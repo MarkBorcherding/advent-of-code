@@ -33,7 +33,6 @@ let parseLine line : option<Line> =
         | l -> None
 
 let Matches l =
-
     let c:char = l.Rule.Character.ToCharArray() |> Seq.head
     let count = l.Password.ToCharArray() |> 
                     Array.filter (fun a -> a = c) |>
@@ -41,18 +40,52 @@ let Matches l =
 
     l.Rule.Min <= count && count <= l.Rule.Max
 
+let xor a b = (a || b) && (a <> b)
 
+let get index list =
+    Array.tryItem (index - 1) list
 
-[<EntryPoint>]
-let main argv =
-    let result = 
-        Day02.Data.input |>
+let matches expected actual  =
+    match actual with
+        | Some(a) -> a = expected
+        | None -> false
+
+let Part2Matches l =
+    let ruleChar:char = l.Rule.Character.ToCharArray() |> Seq.head
+    let passwordChars = l.Password.ToCharArray()
+
+    let matchesFirst = 
+        passwordChars |>
+            get l.Rule.Min |>
+            matches ruleChar
+
+    let matchesSecond = 
+        passwordChars |>
+            get l.Rule.Max |>
+            matches ruleChar
+
+    xor matchesFirst matchesSecond
+
+let part1 input = 
+    input  |>
         Array.map parseLine |>
         Array.choose id |>
         Array.filter Matches |>
         Array.length
 
-    printfn "%i" result
+let part2 input =
+    input |>
+        Array.map parseLine |>
+        Array.choose id |>
+        Array.filter Part2Matches |>
+        Array.length
+
+
+[<EntryPoint>]
+let main argv =
+
+    printfn "part 1 %i" (part1 Day02.Data.input)
+    printfn "part 2 %i" (part2 Day02.Data.input)
 
     Console.ReadKey() |> ignore
     0 // return an integer exit code
