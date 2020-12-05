@@ -41,7 +41,6 @@ let rec countTrees moveX moveY x y (treemap:TreeMap) =
 
 
 let printTreeMap (treemap:TreeMap) =
-
     treemap |> 
         Array.map (fun row -> 
             row |>
@@ -76,8 +75,42 @@ let main argv =
             parse |>
             thing 0 0
 
+    printfn "part 1 "
     printfn "Sample answer is %i" sampleAnswer
     printfn "My answer is %i" myAnswer
+
+    printfn "\npart 2"
+
+
+    let m = Day03.Data.input |>
+                parse
+
+
+    let slopes = [
+        countTrees 1 1
+        countTrees 3 1
+        countTrees 5 1 
+        countTrees 7 1
+        countTrees 1 2
+    ]
+
+    let part2 map = 
+        let m = parse map
+        (List.map ((fun slope -> slope 0 0 m) >> int64) slopes) |>
+            List.fold (*) 1L 
+                        
+        
+
+    let sample2 = part2 Day03.Data.sample
+    let my2 = part2 Day03.Data.input
+
+    printfn "sample 2 %i" sample2
+    printfn "my 2 %i" my2
+    
+
+
+
+
 
 
     0 // return an integer exit code
