@@ -30,17 +30,16 @@ module Part1 =
                 
                 
 module Part2=
-    let rec takeWhileAcc pred (acc:int64) list : int64 list =
-        if pred acc then
-            match list with
-                | [] -> []
-                | head :: tail -> head :: takeWhileAcc pred (acc + head) tail 
-        else
-            []
+    
+    let rec takeWhileAcc pred accF acc list : int64 list =
+        match list with
+            | [] -> []
+            | head :: tail when pred acc -> head :: takeWhileAcc pred accF (accF acc head) tail
+            | _ -> []
     
     let encryptionWeakness (list: int64 list) (targetSum:int64) =
             let pred acc = acc < targetSum
-            let takeThem = takeWhileAcc pred 0L 
+            let takeThem = takeWhileAcc pred (+) 0L
             let rec recurse l =
                 let found = takeThem l
                 let exact = found |> List.sum |> (=) targetSum
