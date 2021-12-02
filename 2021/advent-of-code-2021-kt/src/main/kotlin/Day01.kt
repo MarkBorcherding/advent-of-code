@@ -1,5 +1,3 @@
-package day01
-
 class Day01 {
     object Part1{
         fun calc(input: List<Int>): Int {

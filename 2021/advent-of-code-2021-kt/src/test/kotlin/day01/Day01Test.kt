@@ -1,5 +1,6 @@
 package day01
 
+import Day01
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -28,7 +29,7 @@ internal class Day01Test
     @Test
     fun `part 2 my input`() {
         val actual = Day01.Part2.calc(Input.mine)
-        assertEquals(5, actual)
+        assertEquals(1589, actual)
     }
 
 }
