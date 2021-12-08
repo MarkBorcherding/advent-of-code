@@ -1,6 +1,3 @@
-package day03
-
-import Day03
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

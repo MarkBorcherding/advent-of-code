@@ -12,6 +12,11 @@ repositories {
     mavenCentral()
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_16
+    targetCompatibility = JavaVersion.VERSION_16
+}
+
 dependencies {
     implementation(platform("io.arrow-kt:arrow-stack:1.0.1"))
     implementation("io.arrow-kt:arrow-core")
@@ -24,7 +29,7 @@ tasks.test {
 }
 
 tasks.withType<KotlinCompile>() {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "16"
 }
 
 application {
