@@ -20,6 +20,7 @@ java {
 dependencies {
     implementation(platform("io.arrow-kt:arrow-stack:1.0.1"))
     implementation("io.arrow-kt:arrow-core")
+    implementation("com.google.guava:guava:31.0.1-jre")
 
     testImplementation(kotlin("test"))
 }
