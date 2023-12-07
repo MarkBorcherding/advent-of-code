@@ -2,7 +2,6 @@ import math
 import re
 
 import numpy as np
-from typing import Callable
 
 input = """
 467..114..
@@ -18,76 +17,11 @@ input = """
 """.strip()
 
 
-class Matrix():
-
-    def __init__(self, width: int, height: int):
-        self.data = []
-        self.width = width
-        self.height = height
-        self.rows = list(range(0, height))
-        self.columns = list(range(0, width))
-        for row in range(0, height):
-            self.data.append(['.'] * width)
-
-    def to_s(self):
-        return "\n".join(list(map(lambda c: ''.join(c), self.data)))
-
-    def set(self, x: int, y: int, v: str):
-        self.data[y][x] = v
-
-    def get(self, x: int, y: int):
-        return self.data[y][x]
-
-    def row(self, row: int):
-        return self.data[row]
-
-    def column(self, column):
-        col = []
-        for row in self.rows:
-            col += self.get(row, column)
-        return col
-
-    type Predicate = Callable[[str], bool]
-
-    def find_coords(self, predicate: Predicate):
-        found = []
-        for y in range(0, self.height):
-            for x in range(0, self.width):
-                v = self.get(x, y)
-                if predicate(v):
-                    found.append((x, y))
-        return found
-
 
 class Schematic:
 
     def __init__(self, input: str):
-        lines = input.splitlines()
-        width = len(lines[0])
-        height = len(lines)
-        self.matrix = Matrix(width, height)
-
-        for row in range(0, height):
-            for col in range(0, width):
-                self.matrix.set(col, row, lines[row][col])
-
-    def symbols(self):
-        regex = re.compile(r'[^0-9.]')
-        symbols = self.matrix.find_coords(lambda v: regex.match(v) is not None)
-        return symbols
-
-    def numbers(self):
-        regex = re.compile(r'(\d+)')
-        numbers = []
-
-        for row in self.matrix.rows:
-            regex = re.compile(r'(\d+)')
-            numbers += list(regex.finditer(''.join(self.matrix.row(row))))
-
-        for col in self.matrix.columns:
-            numbers += list(regex.finditer(''.join(self.matrix.column(col))))
-
-        return map(lambda x: x. , numbers)
+       np.arange
 
 
 s = Schematic(input)
