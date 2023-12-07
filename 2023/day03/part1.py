@@ -1,7 +1,8 @@
 import math
 import re
-from typing import Callable
 
+import numpy as np
+from typing import Callable
 
 input = """
 467..114..
@@ -37,6 +38,15 @@ class Matrix():
     def get(self, x: int, y: int):
         return self.data[y][x]
 
+    def row(self, row: int):
+        return self.data[row]
+
+    def column(self, column):
+        col = []
+        for row in self.rows:
+            col += self.get(row, column)
+        return col
+
     type Predicate = Callable[[str], bool]
 
     def find_coords(self, predicate: Predicate):
@@ -49,7 +59,7 @@ class Matrix():
         return found
 
 
-class Schematic():
+class Schematic:
 
     def __init__(self, input: str):
         lines = input.splitlines()
@@ -62,24 +72,22 @@ class Schematic():
                 self.matrix.set(col, row, lines[row][col])
 
     def symbols(self):
-        regex = re.compile(r'[^0-9\.]')
-        symbols = self.matrix.find_coords(lambda v: regex.match(v))
+        regex = re.compile(r'[^0-9.]')
+        symbols = self.matrix.find_coords(lambda v: regex.match(v) is not None)
         return symbols
 
     def numbers(self):
         regex = re.compile(r'(\d+)')
         numbers = []
 
-        for row in range(0,self.matrix.height):
-            numbers +=  regex.search(''.join(row))
+        for row in self.matrix.rows:
+            regex = re.compile(r'(\d+)')
+            numbers += list(regex.finditer(''.join(self.matrix.row(row))))
 
-        for col in range(0)
+        for col in self.matrix.columns:
+            numbers += list(regex.finditer(''.join(self.matrix.column(col))))
 
-        return numbers
-
-            
-
-
+        return map(lambda x: x. , numbers)
 
 
 s = Schematic(input)
