@@ -69,6 +69,7 @@ class ZoneMap:
 
 maps = list(map(ZoneMap, tail))
 
+
 seed_locations = []
 for seed in seeds:
     loc = functools.reduce(lambda acc, cur: cur.map(acc), maps, int(seed))
@@ -80,4 +81,6 @@ for (seed, loc) in seed_locations:
     if loc < min[1]:
         min = (seed, loc)
 
-print(min)
+print("part 1", min)
+
+
