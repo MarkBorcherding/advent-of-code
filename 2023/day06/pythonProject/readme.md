@@ -12,8 +12,8 @@ The organizer brings you over to the area where the boat races are held. The boa
 
 For example:
 
-Time:      7  15   30
-Distance:  9  40  200
+    Time:      7  15   30
+    Distance:  9  40  200
 
 This document describes three races:
 
