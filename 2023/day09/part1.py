@@ -18,6 +18,7 @@ def calculate_map(line):
     # levels = [line]
     current_level = line
     last_values = [line[-1]]
+    first_values = [line[0]]
     while not all(map(lambda x: x == 0, current_level)):
         next_level = []
 
@@ -25,17 +26,23 @@ def calculate_map(line):
             next_level.append(current_level[index+1] - current_level[index])
 
         last_values.append(next_level[-1])
+        first_values.append(next_level[0])
         # levels.append(next_level)
         current_level = next_level  # Update the current_level
 
     # print("\n".join(map(str, levels)))
     # print(last_values)
     sum = 0
-    for v in last_values[::-1]:
-        sum += v
-    # print(sum)
+    diff = 0
+    next_first_values = []
+    for f, l in zip(first_values[::-1], last_values[::-1]):
+        sum += l
+        diff = f - diff
+        next_first_values.append(diff)
+
+    # print(line, last_values, sum, first_values, next_first_values, diff)
     # print("----------")
-    return sum
+    return diff
 
 
 next_values = list(map(calculate_map, lines))
