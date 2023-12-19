@@ -1,18 +1,6 @@
 from enum import Enum
 from math import floor
-from typing import Callable
 from rich import print
-
-
-input = """
-.....
-.S-7.
-.|.|.
-.L-J.
-.....
-""".strip()
-
-map = []
 
 
 class Direction(Enum):
@@ -88,13 +76,13 @@ class Matrix:
 
         match direction:
             case Direction.EAST:
-                return from_cell in "S-FL" and to_cell in "-J7"
+                return from_cell in "S-FL" and to_cell in "-J7S"
             case Direction.WEST:
-                return from_cell in "S-J7" and to_cell in "-LF"
+                return from_cell in "S-J7" and to_cell in "-LFS"
             case Direction.NORTH:
-                return from_cell in "S|JL" and to_cell in "|7F"
+                return from_cell in "S|JL" and to_cell in "|7FS"
             case Direction.SOUTH:
-                return from_cell in "S|7F" and to_cell in "|LJ"
+                return from_cell in "S|7F" and to_cell in "|LJS"
             case _:
                 return False
 
@@ -113,12 +101,16 @@ class Matrix:
 
         steps = 1
 
-        previous_cells = [self.starting_coords, self.starting_coords]
+        previous_cells = [self.starting_coords]
+
+        current_cells = [current_cells[0]]
+        print(current_cells, previous_cells)
+
         for cell in current_cells:
             dir = Matrix.direction(self.starting_coords, cell)
             self.steps[self.index(cell)] = step_text[dir]
 
-        while current_cells[0] != current_cells[1]:
+        while current_cells[0] != self.starting_coords:
             next_cells = []
             steps += 1
             for prev, curr in zip(previous_cells, current_cells):
@@ -140,7 +132,15 @@ class Matrix:
         return steps
 
 
-input = """
+input = ["""
+.....
+.S-7.
+.|.|.
+.L-J.
+.....
+""".strip()]
+
+input += ["""
 ...........
 .S-------7.
 .|F-----7|.
@@ -150,18 +150,45 @@ input = """
 .|..|.|..|.
 .L--J.L--J.
 ...........
-""".strip()
+""".strip()]
+
+input += ["""
+.F----7F7F7F7F-7....
+.|F--7||||||||FJ....
+.||.FJ||||||||L7....
+FJL7L7LJLJ||LJ.L-7..
+L--J.L7...LJS7F-7L7.
+....F-J..F7FJ|L7L7L7
+....L7.F7||L7|.L7L7|
+.....|FJLJ|FJ|F7|.LJ
+....FJL-7.||.||||...
+....L---J.LJ.LJLJ...
+""".strip()]
+
+input += ["""
+FF7FSF7F7F7F7F7F---7
+L|LJ||||||||||||F--J
+FL-7LJLJ||||||LJL-77
+F--JF--7||LJLJ7F7FJ-
+L---JF-JLJ.||-FJLJJ7
+|F|F-JF---7F7-L7L|7|
+|FFJF7L7F-JF7|JL---7
+7-L-JL7||F7|L7F-7F7|
+L.L7LFJ|||||FJL7||LJ
+L7JLJL-JLJLJL--JLJ.L
+""".strip()]
 
 f = open('input.txt', 'r')
-# input = f.read().strip()
-tube_map = Matrix(input)
+input += [f.read().strip()]
+tube_map = Matrix(input[3])
 
 print(tube_map.longest_path())
 
-
-tube_walls = list(step_text.values()) + ["S"]
 print("preclean")
 print(tube_map.print(tube_map.steps))
+
+tube_walls = list(step_text.values()) + ["S"]
+
 for row in range(0, tube_map.height):
     collided_with_tube_yet = False
     for col in range(0, tube_map.width):
@@ -195,6 +222,51 @@ for col in range(0, tube_map.width):
             collided_with_tube_yet = True
         elif not collided_with_tube_yet:
             tube_map.steps[tube_map.index((col, row))] = " "
+
+
+unused_parts = "-|JF7L."
+
+print(tube_map.print(tube_map.steps))
+
+for row in range(0, tube_map.height):
+    for col in range(0, tube_map.width):
+        cell = tube_map.steps[tube_map.index((col, row))]
+
+        x = col
+        y = row
+
+        if cell == step_text[Direction.WEST]:
+            y = y - 1 if row > 0 else None
+        elif cell == step_text[Direction.EAST]:
+            y = y + 1 if row < tube_map.height - 1 else None
+        elif cell == step_text[Direction.SOUTH]:
+            x = x - 1 if col > 0 else None
+        elif cell == step_text[Direction.NORTH]:
+            x = x + 1 if col < tube_map.width - 1 else None
+        else:
+            x = None
+            y = None
+
+        if None in [x, y]:
+            pass
+        else:
+            index = tube_map.index((x, y))
+            if tube_map.steps[index] in unused_parts:
+                tube_map.steps[index] = " "
+
+print(tube_map.print(tube_map.steps))
+
+for row in range(0, tube_map.height):
+    for col in range(0, tube_map.width):
+        cell = tube_map.steps[tube_map.index((col, row))]
+        if cell in unused_parts:
+            n = tube_map.neighors((col, row))
+            neighbors = map(lambda x: tube_map.index(x), n)
+            neighbor_vals = list(map(lambda x: tube_map.steps[x], neighbors))
+
+            for v in neighbor_vals:
+                if v in ' ':
+                    tube_map.steps[tube_map.index((col, row))] = " "
 
 
 print(tube_map.print(tube_map.steps))
