@@ -134,19 +134,34 @@ class Matrix:
             previous_cells = current_cells
             current_cells = next_cells
 
+        dir = Matrix.direction(previous_cells[0], current_cells[0])
+        self.steps[self.index(current_cells[0])] = step_text[dir]
+
         return steps
 
 
-f = open('input.txt', 'r')
-input = f.read().strip()
+input = """
+...........
+.S-------7.
+.|F-----7|.
+.||.....||.
+.||.....||.
+.|L-7.F-J|.
+.|..|.|..|.
+.L--J.L--J.
+...........
+""".strip()
 
+f = open('input.txt', 'r')
+# input = f.read().strip()
 tube_map = Matrix(input)
 
 print(tube_map.longest_path())
 
 
-tube_walls = list(step_text.values())
-print(tube_walls)
+tube_walls = list(step_text.values()) + ["S"]
+print("preclean")
+print(tube_map.print(tube_map.steps))
 for row in range(0, tube_map.height):
     collided_with_tube_yet = False
     for col in range(0, tube_map.width):
@@ -182,24 +197,5 @@ for col in range(0, tube_map.width):
             tube_map.steps[tube_map.index((col, row))] = " "
 
 
-no_changes = False
-while not no_changes:
-    no_changes = True
-    for index, cell in enumerate(tube_map.steps):
-        curr_coord = tube_map.coord(index)
-
-        neighbors = tube_map.neighors(curr_coord)
-        for neighbor in neighbors:
-            neighbor_index = tube_map.index(neighbor)
-
-            if tube_map.steps[index] in tube_walls:
-                continue
-
-            if tube_map.steps[neighbor_index] == " " and tube_map.steps[index] != " ":
-                tube_map.steps[index] = " "
-                no_changes = False
-
-
 print(tube_map.print(tube_map.steps))
-
 print(len(list(filter(lambda x: x in "|-FJL7.", tube_map.steps))))
