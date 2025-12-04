@@ -1,10 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(dotnet new:*)",
       "Bash(dotnet build:*)",
       "Bash(dotnet run:*)",
-      "Bash(dotnet script:*)"
+      "Bash(tree:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
