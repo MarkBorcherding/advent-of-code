@@ -34,20 +34,14 @@ public static class Extensions
 
     public static string Row(this char[,] matrix, int row)
     {
-        var s = "";
-        foreach (var col in matrix.ColumnsEnum())
-        {
-           s += matrix[col, row]; 
-        }
-        return s;
+        return matrix
+            .ColumnsEnum()
+            .Aggregate("", (current, col) => current + matrix[col, row]);
     }
 
     public static IEnumerable<string> Rows(this char[,] matrix)
     {
-        foreach (var row in Enumerable.Range(0,matrix.Height()))
-        {
-            yield return matrix.Row(row);
-        }
+        return Enumerable.Range(0,matrix.Height()).Select(matrix.Row);
     }
     
 
@@ -59,43 +53,25 @@ public static class Extensions
         var height = matrix.Height();
         
         var result = new char[height, width];
-        
-        var cols = () => Enumerable.Range(0, width);
-        var rows = () => Enumerable.Range(0, height);
 
-        foreach (var col in cols())
+        foreach (var col in ColsIndexes())
         {
-            foreach (var row in rows())
+            foreach (var row in RowsIndexes())
             {
                 result[row, col] = matrix[col, row];
             }
         }
 
         return result;
+
+        IEnumerable<int> RowsIndexes() => Enumerable.Range(0, height);
+        IEnumerable<int> ColsIndexes() => Enumerable.Range(0, width);
     }
 
     public static T Tap<T>(this T matrix, Action<T> action)
     {
         action(matrix);
         return matrix;
-    }
-
-    public static void PrintMatrix(this char[,] matrix)
-    {
-        var width = matrix.GetLength(0);
-        var height = matrix.GetLength(1);
-        
-        
-        var cols = Enumerable.Range(0, width);
-        var rows = Enumerable.Range(0, height);
-
-        Console.Out.WriteLine("-------------------");
-        foreach (var row in matrix.Rows())
-        {
-            Console.Out.WriteLine($"|{row}|");
-        }
-        Console.Out.WriteLine("-------------------");
-        
     }
 
     public static IEnumerable<(char, List<string>)> GroupIntoProblems(this char[,] matrix)
@@ -111,7 +87,7 @@ public static class Extensions
             if (number.Trim().Length == 0)
             {
                 yield return (op, current);
-                current = new List<string>();
+                current = [];
             }
             else
             {
@@ -132,17 +108,12 @@ public static class Extensions
         foreach (var problem in problems)
         {
             var (op, numbers) = problem;
-            switch (op)
+            yield return op switch
             {
-                case '+':
-                    yield return numbers.Select(int.Parse).Sum();
-                    break;
-                case '*':
-                    yield return numbers.Select(int.Parse).Aggregate(1L, (acc, cur) => acc * cur);
-                    break;
-                default:
-                    throw new Exception($"Invalid operator {op}");
-            }
+                '+' => numbers.Select(int.Parse).Sum(),
+                '*' => numbers.Select(int.Parse).Aggregate(1L, (acc, cur) => acc * cur),
+                _ => throw new Exception($"Invalid operator {op}")
+            };
         }
     }
 }
