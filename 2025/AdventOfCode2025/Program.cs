@@ -91,14 +91,6 @@ if (puzzle == null)
     return 1;
 }
 
-try
-{
-    var result = part.Value == 1 ? puzzle.SolvePart1(input) : puzzle.SolvePart2(input);
-    Console.WriteLine($"Day {day.Value:D2} Part {part.Value}: {result}");
-    return 0;
-}
-catch (Exception ex)
-{
-    Console.WriteLine($"Error solving puzzle: {ex.Message}");
-    return 1;
-}
+var result = part.Value == 1 ? puzzle.SolvePart1(input) : puzzle.SolvePart2(input);
+Console.WriteLine($"Day {day.Value:D2} Part {part.Value}: {result}");
+return 0;
